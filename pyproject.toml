@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "nonebot-plugin-bind"
+version = "0.1.0"
+description = "nonebot多平台账户信息绑定"
+authors = ["canxin <1969730106@qq.com>"]
+readme = "README.md"
+packages = [{ include = "nonebot_plugin_bind" }]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+APScheduler = "^3.10.1"
+SQLAlchemy = "^2.0.19"
+nonebot2 = "^2.0.1"
+aiosqlite = "^0.19.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
