@@ -2,8 +2,7 @@
   <a href="https://github.com/canxin121">
     <img src="https://socialify.git.ci/canxin121/nonebot_plugin_bind/image?font=Raleway&forks=1&issues=1&language=1&logo=https%3A%2F%2Fcanxin121.github.io%2Fdocs%2Flogo.png&name=1&owner=1&pattern=Charlie%20Brown&pulls=1&stargazers=1&theme=Auto" width="700" height="350">
   </a>
-  <h1>nonebot_plugin_bind仓库</h1>
-  <p><em>nonebot_plugin_bind</em></p>
+  <h1>nonebot_plugin_bind</h1>
 </div>
 
 <p align="center">
