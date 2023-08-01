@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "nonebot-plugin-bind"
-version = "0.1.1"
+version = "0.1.3"
 description = "nonebot多平台账户信息绑定"
 authors = ["canxin <1969730106@qq.com>"]
 readme = "README.md"
 packages = [{ include = "nonebot_plugin_bind" }]
-
+homepage = 'https://github.com/canxin121/nonebot_plugin_bind'
 [tool.poetry.dependencies]
 python = "^3.8"
 APScheduler = "^3.10.1"

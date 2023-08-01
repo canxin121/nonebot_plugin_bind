@@ -8,10 +8,20 @@ from nonebot import on_command
 from nonebot.adapters import Event, Bot
 from nonebot.matcher import Matcher
 from nonebot.params import ArgStr, T_State, CommandArg, RawCommand
+from nonebot.plugin import PluginMetadata
 
 from .types import Bind
 from .user_sql import edit_user, del_user, User
 from .utils import get_params, get_user, GetUser, _is_private_
+
+__plugin_meta__ = PluginMetadata(
+    name="跨平台账户绑定",
+    description="nonebot多适配器通用的跨平台账户绑定插件",
+    usage="1.使用'bind'或'绑定'命令发起绑定事件\n2.使用'bindinfo'或'绑定信息'查看绑定信息",
+    type="library",
+    homepage="https://github.com/canxin121/nonebot_plugin_bind",
+    supported_adapters={"~onebot.v11", "~telegram", "~kaiheila", "~feishu", "~villa"},
+)
 
 SECONDS = str(get_driver().config.session_expire_timeout.seconds)
 

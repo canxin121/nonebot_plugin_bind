@@ -18,6 +18,13 @@
 </p>
 <div align="left">
 
+# 适配支持
+- onebotv11
+- telegram
+- discord
+- kook(开黑啦)
+- villa(大别野)
+- 飞书
 # 使用说明
 
 ## 用户使用说明
@@ -28,10 +35,10 @@
 | 'bindinfo' 或 '绑定信息' | 仅私聊   | 查看账户绑定信息 |
 
 具体使用请看下图流程示例  
-(如果是在群聊中发起的绑定,不会显示下面的绑定信息,只会显示其他内容)
-![使用qq发送bind命令](https://github.com/canxin121/nonebot_plugin_bind/blob/main/src/1.png)  
-![使用discord发送bind命令和token](https://github.com/canxin121/nonebot_plugin_bind/blob/main/src/2.png)  
-![使用qq发送密钥确认绑定](https://github.com/canxin121/nonebot_plugin_bind/blob/main/src/3.png)  
+(如果是在群聊中发起的绑定,不会显示下面的绑定信息,只会显示其他内容)  
+![使用qq发送bind命令](https://raw.githubusercontent.com/canxin121/nonebot_plugin_bind/main/src/1.png)  
+![使用discord发送bind命令和token](https://raw.githubusercontent.com/canxin121/nonebot_plugin_bind/main/src/2.png)  
+![使用qq发送密钥确认绑定](https://raw.githubusercontent.com/canxin121/nonebot_plugin_bind/main/src/3.png)  
 
 ## 开发者说明
 使用依赖注入获取用户信息的示例
