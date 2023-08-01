@@ -35,7 +35,7 @@
 ## 开发者说明
 使用依赖注入获取用户信息的示例
 
-```
+```python
 from typing import Annotated
 
 from nonebot import require
