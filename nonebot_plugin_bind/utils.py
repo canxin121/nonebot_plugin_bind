@@ -5,19 +5,9 @@ from .user_sql import User
 from .user_sql import get_user as get_sql_user
 
 
-def get_params(bot: Bot, event: Event):
-    conn_dict = {"OneBot V11": "qq_account", "Telegram": "telegram_account", "Kaiheila": "kook_account",
-                 "Discord": "discord_account", "ding": "dingtalk_account", "feishu": "feishu_account",
-                 "大别野": "mihoyo_account"}
-    if bot.type in conn_dict.keys():
-        account_key = conn_dict[bot.type]
-        params = {account_key: event.get_user_id()}
-        return params
-
-
 async def get_user(bot: Bot, event: Event, auto_create: bool = True):
-    params = get_params(bot, event)
-    return await get_sql_user(auto_create=auto_create, **params)
+    _adapter_name = bot.adapter.get_name()
+    return await get_sql_user(platform=_adapter_name, account=event.get_user_id(), auto_create=auto_create)
 
 
 def GetUser(auto_create=True):

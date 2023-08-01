@@ -1,21 +1,20 @@
 import asyncio
 from pathlib import Path
+from typing import Optional, List
 
-from sqlalchemy import UniqueConstraint, Index
-from sqlalchemy import select, Integer, String
+from sqlalchemy import select, ForeignKey, UniqueConstraint
+from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import async_sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import DeclarativeBase, relationship, Mapped, mapped_column, joinedload
 
 ROOT = Path().parent / 'data'
 ROOT.mkdir(exist_ok=True)
-PATH = (ROOT / "bind.db").absolute()
+PATH = (ROOT / "bind.db")
 PATH.touch(exist_ok=True)
-Engine_Arg = f"sqlite+aiosqlite{PATH.as_uri()[4:]}"
+Engine_Arg = make_url(f"sqlite+aiosqlite:///{str(PATH)}")
 Engine = create_async_engine(Engine_Arg)
-async_session = async_sessionmaker(Engine, expire_on_commit=False)
+Async_Session = async_sessionmaker(Engine, expire_on_commit=False)
 
 
 class Base(DeclarativeBase):
@@ -23,138 +22,126 @@ class Base(DeclarativeBase):
 
 
 class User(Base):
-    __tablename__ = "accounts"
+    __tablename__ = "user"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    platform_users: Mapped[List['PlatFormUser']] = relationship(back_populates='user', cascade='all, delete-orphan')
 
-    id: Mapped[int] = mapped_column(type_=Integer, primary_key=True)
-    qq_account: Mapped[str] = mapped_column(type_=String, nullable=True)
-    wechat_account: Mapped[str] = mapped_column(type_=String, nullable=True)
-    telegram_account: Mapped[str] = mapped_column(type_=String, nullable=True)
-    discord_account: Mapped[str] = mapped_column(type_=String, nullable=True)
-    kook_account: Mapped[str] = mapped_column(type_=String, nullable=True)
-    feishu_account: Mapped[str] = mapped_column(type_=String, nullable=True)
-    dingtalk_account: Mapped[str] = mapped_column(type_=String, nullable=True)
-    mihoyo_account: Mapped[str] = mapped_column(type_=String, nullable=True)
+    def __str__(self):
+        pu_str = "\n".join(str(pu) for pu in self.platform_users)
+        return pu_str
+
+    def __repr__(self):
+        return f"id={self.id}\n{str(self)}"
+
+
+class PlatFormUser(Base):
+    __tablename__ = "platform_user"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey('user.id'))
+    user: Mapped["User"] = relationship(back_populates='platform_users')
+    platform: Mapped[str]
+    account: Mapped[str]
+
     __table_args__ = (
-        UniqueConstraint('qq_account'),
-        UniqueConstraint('wechat_account'),
-        UniqueConstraint('telegram_account'),
-        UniqueConstraint('discord_account'),
-        UniqueConstraint('kook_account'),
-        UniqueConstraint('feishu_account'),
-        UniqueConstraint('dingtalk_account'),
-        UniqueConstraint('mihoyo_account'),
-        Index('ix_accounts_qq', 'qq_account', unique=True),
-        Index('ix_account_wechat', 'wechat_account', unique=True),
-        Index('ix_accounts_tg', 'telegram_account', unique=True),
-        Index('ix_accounts_discord', 'discord_account', unique=True),
-        Index('ix_accounts_kook', 'kook_account', unique=True),
-        Index('ix_accounts_feishu', 'feishu_account', unique=True),
-        Index('ix_accounts_dingtalk', 'dingtalk_account', unique=True),
-        Index('ix_accounts_mihoyo', 'mihoyo_account', unique=True),
+        UniqueConstraint('platform', 'account', name='uc_platform_account'),
     )
 
     def __str__(self):
-        result = ""
-        for attr in sorted(self.__dict__, key=len):
-            if not attr.startswith("_"):
-                value = getattr(self, attr)
-                if value is not None:
-                    result += f"{attr}: {value}\n"
-        return result
+        return f"{self.platform}:{self.account}"
+
+    def __repr__(self):
+        return str(self)
 
 
-def build_params(qq_account, telegram_account, discord_account, kook_account,
-                 feishu_account, dingtalk_account, mihoyo_account):
-    # 使用字典推导式来构建参数字典
-    params = {field: param for param, field in zip([qq_account, telegram_account, discord_account, kook_account,
-                                                    feishu_account, dingtalk_account, mihoyo_account],
-                                                   ["qq_account", "telegram_account", "discord_account", "kook_account",
-                                                    "feishu_account", "dingtalk_account", "mihoyo_account"])
-              if param}
-    return params
+async def add_user(platform: str, account: str):
+    """添加一个新的user"""
+    async with Async_Session() as session:
+        user = User()
+        PlatFormUser(user=user, platform=platform, account=account)
+        session.add(user)
+        await session.commit()
 
 
-def set_params(user, qq_account, telegram_account, discord_account, kook_account,
-               feishu_account, dingtalk_account, mihoyo_account):
-    params = {
-        "qq_account": qq_account,
-        "telegram_account": telegram_account,
-        "discord_account": discord_account,
-        "kook_account": kook_account,
-        "feishu_account": feishu_account,
-        "dingtalk_account": dingtalk_account,
-        "mihoyo_account": mihoyo_account
-    }
-    for attr, value in params.items():
+async def get_user(platform: str, account: str, auto_create: bool = True):
+    """获取指定user,如无则创建新的"""
+    args = {}
+    for key, value in {"platform": platform, "account": account}.items():
         if value is not None:
-            setattr(user, attr, value)
-
-
-async def get_user(
-        qq_account: str = None,
-        telegram_account: str = None,
-        discord_account: str = None,
-        kook_account: str = None,
-        feishu_account: str = None,
-        dingtalk_account: str = None,
-        mihoyo_account: str = None,
-        auto_create: bool = True, ):
-    if not any([qq_account, telegram_account, discord_account, kook_account,
-                feishu_account, dingtalk_account, mihoyo_account]):
-        raise ValueError("At least one account parameter must be provided")
-
-    params = build_params(qq_account, telegram_account, discord_account, kook_account,
-                          feishu_account, dingtalk_account, mihoyo_account)
-
-    async with async_session() as session:
-        stmt = select(User).filter_by(**params)
-        result = await session.scalars(stmt)
-        user = result.one_or_none()
+            args[key] = value
+    if not args:
+        raise Exception("至少需要提供id或account中的一个")
+    async with Async_Session() as session:
+        result = await session.scalars(
+            select(User).options(joinedload(User.platform_users)).join(PlatFormUser).filter_by(**args))
+        user = result.first()
         if user is not None or (not auto_create):
             return user
         else:
-            user = User()
-            set_params(user, qq_account, telegram_account, discord_account,
-                       kook_account, feishu_account, dingtalk_account, mihoyo_account)
-            session.add(user)
-            await session.commit()
-            result = await session.scalars(select(User).filter_by(**params))
-            return result.one_or_none()
+            await add_user(platform, account)
+            result = await session.scalars(
+                select(User).options(joinedload(User.platform_users)).join(PlatFormUser).filter_by(**args))
+            return result.first()
 
 
 async def del_user(
-        user: User = None,
-        qq_account: str = None,
-        telegram_account: str = None,
-        discord_account: str = None,
-        kook_account: str = None,
-        feishu_account: str = None,
-        dingtalk_account: str = None,
-        mihoyo_account: str = None):
+        platform: str,
+        account: Optional[str] = None,
+        user: User = None, ):
+    """删掉指定user"""
     if user is None:
-        user = await get_user(qq_account, telegram_account, discord_account, kook_account,
-                              feishu_account, dingtalk_account, mihoyo_account)
-    async with async_session() as session:
-        await session.delete(user)
+        user = await get_user(platform, account, False)
+    if user is not None:
+        async with Async_Session() as session:
+            await session.delete(user)
+            await session.commit()
+    else:
+        return
+
+
+async def merge_user(to_user: User, origin_user: User):
+    """将origin_user的绑定信息迁移合并到to_user种"""
+    args_set = set()
+    for pu in to_user.platform_users + origin_user.platform_users:
+        args = (pu.platform, pu.account)
+        args_set.add(args)
+
+    async with Async_Session() as session:
+        new_user = User(id=to_user.id)
+        platform_users = [PlatFormUser(user=new_user, platform=platform, account=account) for platform, account in
+                          args_set]
+        await session.delete(to_user)
+        await session.delete(origin_user)
+        await session.flush()
+        session.add_all(platform_users)
         await session.commit()
 
 
-async def edit_user(
+async def del_platform_user(user: User, platform: str, account: str):
+    """三者都是同一个platform_user的值"""
+    async with Async_Session() as session:
+        if len(user.platform_users) == 1:
+            await session.delete(user)
+            await session.commit()
+            return
+        else:
+            result1 = await session.scalars(select(PlatFormUser).filter_by(platform=platform, account=account))
+            platform_user = result1.one_or_none()
+            await session.delete(platform_user)
+            await session.commit()
+            return
+
+
+async def add_platform_user(
         user: User,
-        qq_account: str = None,
-        telegram_account: str = None,
-        discord_account: str = None,
-        kook_account: str = None,
-        feishu_account: str = None,
-        dingtalk_account: str = None,
-        mihoyo_account: str = None,
+        platform: str,
+        account: str,
 ):
-    async with async_session() as session:
-        set_params(user, qq_account, telegram_account, discord_account, kook_account,
-                   feishu_account, dingtalk_account, mihoyo_account)
-        session.add(user)
+    """将后两者绑定到前者"""
+    async with Async_Session() as session:
+        platform_user = PlatFormUser(user=user, platform=platform, account=account)
+        session.add(platform_user)
         await session.commit()
-        return user
+        return
 
 
 async def create_all():
@@ -163,14 +150,15 @@ async def create_all():
 
 
 asyncio.run(create_all())
-
 if __name__ == '__main__':
-    async def async_main() -> None:
-        # account = await get_user(discord_account='2187291322')
-        # print(account)
-        # print(account.id)
-        await get_user(discord_account='2187291322111')
-        await del_user(discord_account='2187291322')
+    async def main():
+        user1 = await get_user('qq', '123')
+        user2 = await get_user('wechat', '456')
+
+        # 合并两个用户
+        await merge_user(user1, user2)
+        user = await get_user('qq', '123')
+        print(user)
 
 
-    asyncio.run(async_main())
+    asyncio.run(main())
