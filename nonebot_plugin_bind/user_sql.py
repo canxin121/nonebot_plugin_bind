@@ -40,6 +40,8 @@ class PlatFormUser(db.Model):
     def __repr__(self):
         return str(self)
 
+User.platform_users = relationship(PlatFormUser, uselist=True, back_populates='user', cascade='all, delete-orphan')
+
 
 async def add_user(platform: str, account: str):
     """添加一个新的user"""
