@@ -26,7 +26,7 @@ class User(db.Model):
 class PlatFormUser(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey('nonebot_plugin_bind_user.id'))
-    user: Mapped["User"] = relationship(back_populates='platform_users')
+    user: Mapped[User] = relationship(User, back_populates='platform_users')
     platform: Mapped[str]
     account: Mapped[str]
 
