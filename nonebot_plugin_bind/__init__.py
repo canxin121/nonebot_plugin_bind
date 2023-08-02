@@ -2,13 +2,15 @@ import secrets
 from datetime import timedelta, datetime
 from typing import Annotated
 
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from nonebot import get_driver
-from nonebot import on_command
+from nonebot import get_driver, require, on_command
 from nonebot.adapters import Event, Bot
 from nonebot.matcher import Matcher
 from nonebot.params import ArgStr, T_State, CommandArg, RawCommand
 from nonebot.plugin import PluginMetadata
+
+require("nonebot_plugin_datastore")
+require("nonebot_plugin_apscheduler")
+from nonebot_plugin_apscheduler import scheduler
 
 from ._types import Bind
 from .user_sql import User, merge_user, del_platform_user
@@ -62,9 +64,7 @@ async def _bind__(bot: Bot,
             await matcher.finish("密钥格式错误 或 请勿在初次发送bind命令时追加信息")
     else:
         _token = str(secrets.token_hex(3))
-        scheduler = AsyncIOScheduler()
         scheduler.add_job(del_Bind, 'date', run_date=datetime.now() + timedelta(seconds=int(SECONDS)), args=[_token])
-        scheduler.start()
         bind = Bind()
         bind.to_user = user
         state['_token'] = _token
