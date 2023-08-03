@@ -99,7 +99,7 @@ def get_groupid(event: Event, bot: Bot):
         return None
     _event_name = event.get_event_name()
     _adapter_name = bot.adapter.get_name()
-    if _adapter_name in ("OneBot V11", "Kaiheila", "Feishu"):
+    if _adapter_name in ("OneBot V11", "Kaiheila", "Feishu", "大别野"):
         return str(event.group_id)
     elif _adapter_name in ('Discord'):
         return str(event.channel_id)
