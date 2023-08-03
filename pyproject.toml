@@ -12,6 +12,7 @@ python = "^3.8"
 nonebot2 = "^2.0.1"
 nonebot-plugin-datastore = "^1.1.0"
 nonebot-plugin-apscheduler = "^0.3.0"
+nonebot-plugin-alconna = "^0.13.0"
 
 [tool.nonebot]
 plugins = ["nonebot_plugin_bind"]

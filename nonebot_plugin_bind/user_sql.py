@@ -14,7 +14,7 @@ class User(db.Model):
 
     def __str__(self):
         pu_str = "\n".join(str(pu) for pu in self.platform_users)
-        return pu_str
+        return f"id={self.id}\n{pu_str}"
 
     def __repr__(self):
         return f"id={self.id}\n{str(self)}"
