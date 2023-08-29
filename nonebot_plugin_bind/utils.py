@@ -1,7 +1,7 @@
 from nonebot.adapters import Bot, Event
 from nonebot.params import Depends
 
-from .config import config
+from .config import Config
 from .group_sql import Group
 from .group_sql import get_group as get_sql_group
 from .user_sql import User
@@ -39,9 +39,9 @@ def _is_private_(event: Event, bot: Bot):
 async def _is_superuser_(event: Event, bot: Bot):
     """不完整"""
     user = await get_user(bot, event)
-    if user.id in config.bind_superuser:
+    if user.id in Config().bind_superuser:
         return True
-    if config.bind_group_admin:
+    if Config().bind_group_admin:
         if _is_private_(event, bot):
             raise Exception("本命令只能在各平台的群聊中使用,无法在私聊中使用")
         _event_name = event.get_event_name()
@@ -99,7 +99,7 @@ def get_groupid(event: Event, bot: Bot):
         return None
     _event_name = event.get_event_name()
     _adapter_name = bot.adapter.get_name()
-    if _adapter_name in ("OneBot V11", "Kaiheila", "Feishu", "大别野"):
+    if _adapter_name in ("OneBot V11","OneBot V12", "Kaiheila", "Feishu"):
         return str(event.group_id)
     elif _adapter_name in ('Discord'):
         return str(event.channel_id)

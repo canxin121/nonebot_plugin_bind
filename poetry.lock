@@ -88,17 +88,17 @@ zookeeper = ["kazoo"]
 
 [[package]]
 name = "arclet-alconna"
-version = "1.7.14"
+version = "1.7.19"
 description = "A High-performance, Generality, Humane Command Line Arguments Parser Library."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "arclet_alconna-1.7.14-py3-none-any.whl", hash = "sha256:439558389a6411fd7bf3de428b084cdb0f3ce9ea8ba60cccce57687356f18f47"},
-    {file = "arclet_alconna-1.7.14.tar.gz", hash = "sha256:14b39f6714f0f50851a4ceb2443b79db4f1331b9025aec179d23384e0de75296"},
+    {file = "arclet_alconna-1.7.19-py3-none-any.whl", hash = "sha256:554bc506f22d9c3a37983ef32ff586c362afa7ea26dab6289dde18ff3f51372d"},
+    {file = "arclet_alconna-1.7.19.tar.gz", hash = "sha256:a20e8dc2702cd25b7efcc4de2675cc1007a4c778bc98931806c95e47ffdbb38f"},
 ]
 
 [package.dependencies]
-nepattern = ">=0.5.8,<0.6.0"
+nepattern = ">=0.5.13,<0.6.0"
 tarina = ">=0.3.3"
 typing-extensions = ">=4.5.0"
 
@@ -107,18 +107,18 @@ full = ["arclet-alconna-tools (>=0.2.0)"]
 
 [[package]]
 name = "arclet-alconna-tools"
-version = "0.6.3"
+version = "0.6.6"
 description = "Builtin Tools for Alconna"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "arclet-alconna-tools-0.6.3.tar.gz", hash = "sha256:efb8944a720e648f5dd91001a61466dd1f2ca2aac272c8fa61cfbad9c5b10f17"},
-    {file = "arclet_alconna_tools-0.6.3-py3-none-any.whl", hash = "sha256:7462fec995c0644186c23473dd6b57af6dde2af4a7fdd8f2ecfe4c842039a355"},
+    {file = "arclet-alconna-tools-0.6.6.tar.gz", hash = "sha256:fd9918f40c4ead8ce189f7151b6fe1ad1501e73dc51b291cb2a063c18dbe38db"},
+    {file = "arclet_alconna_tools-0.6.6-py3-none-any.whl", hash = "sha256:c955553a1a1e171efa5cd2563757c1e9fed0b5af9600a5c1c4ad3d149d7abba6"},
 ]
 
 [package.dependencies]
-arclet-alconna = ">=1.7.10"
-nepattern = ">=0.5.8,<0.6.0"
+arclet-alconna = ">=1.7.18,<2.0"
+nepattern = ">=0.5.13,<0.6.0"
 
 [[package]]
 name = "backports-zoneinfo"
@@ -579,13 +579,13 @@ files = [
 
 [[package]]
 name = "nepattern"
-version = "0.5.12"
+version = "0.5.13"
 description = "a complex pattern, support typing"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "nepattern-0.5.12-py3-none-any.whl", hash = "sha256:a381e6dd8a310125cefb033e37c5df3b1c6dc40ced5fd9486c3685744cec1b16"},
-    {file = "nepattern-0.5.12.tar.gz", hash = "sha256:d8ca534ecc94444e1fa2d060e6394cf1c8d52044ea12add506556c19d66fb0e7"},
+    {file = "nepattern-0.5.13-py3-none-any.whl", hash = "sha256:cbd536df2119f1552e416baa11f4bc50627fb97308c84f8a31405eda2c5ba97e"},
+    {file = "nepattern-0.5.13.tar.gz", hash = "sha256:1d0c6d7f7f122037c2342c7160aa3a4350cfa7c4726da39216cb823a07261720"},
 ]
 
 [package.dependencies]
@@ -594,19 +594,19 @@ typing-extensions = ">=4.5.0"
 
 [[package]]
 name = "nonebot-plugin-alconna"
-version = "0.13.0"
+version = "0.19.1"
 description = "Alconna Adapter for Nonebot"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "nonebot_plugin_alconna-0.13.0-py3-none-any.whl", hash = "sha256:0d4e81be0557788a7eeba1d4c63756a4583dc39c7c5b3d82834915f0bc02f3d5"},
-    {file = "nonebot_plugin_alconna-0.13.0.tar.gz", hash = "sha256:01da6f64a54327ac37eb3802452442dcd0295ead978972e1cf75141f74917008"},
+    {file = "nonebot_plugin_alconna-0.19.1-py3-none-any.whl", hash = "sha256:ad20baead0ef389a17b26ca0a9171592b520c1fc7fb78d375ab0617b50c2e516"},
+    {file = "nonebot_plugin_alconna-0.19.1.tar.gz", hash = "sha256:55f6b7aa2f86f1abb78a95215a13af9ff1f00074e3b2a661df0be8716c81bbe0"},
 ]
 
 [package.dependencies]
-arclet-alconna = ">=1.7.13,<2.0.0"
-arclet-alconna-tools = ">=0.6.3,<0.7.0"
-nepattern = ">=0.5.10,<0.6.0"
+arclet-alconna = ">=1.7.19,<2.0.0"
+arclet-alconna-tools = ">=0.6.6,<0.7.0"
+nepattern = ">=0.5.13,<0.6.0"
 nonebot2 = ">=2.0.0rc4"
 
 [[package]]
@@ -1119,4 +1119,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "c9851c7be858960974d1841413be7d22ffec08e3b4ce5b2dbb2410427beec84e"
+content-hash = "8866c709e6662df50d75b9127ed1e3e4907ae93cb298e70a2638fcbae1e6d0a4"
