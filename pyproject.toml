@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-bind"
-version = "0.1.8"
+version = "0.2.2"
 description = "nonebot多平台账户信息绑定"
 authors = ["canxin <1969730106@qq.com>"]
 readme = "README.md"
@@ -10,9 +10,9 @@ homepage = 'https://github.com/canxin121/nonebot_plugin_bind'
 [tool.poetry.dependencies]
 python = "^3.8"
 nonebot2 = "^2.0.1"
-nonebot-plugin-datastore = "^1.1.0"
-nonebot-plugin-apscheduler = "^0.3.0"
-nonebot-plugin-alconna = "^0.19.1"
+nonebot-plugin-datastore = ">=1.1.0"
+nonebot-plugin-apscheduler = ">=0.3.0"
+nonebot-plugin-alconna = ">=0.27.2"
 
 [tool.nonebot]
 plugins = ["nonebot_plugin_bind"]

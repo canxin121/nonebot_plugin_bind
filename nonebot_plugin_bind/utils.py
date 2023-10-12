@@ -10,7 +10,9 @@ from .user_sql import get_user as get_sql_user
 
 async def get_user(bot: Bot, event: Event, auto_create: bool = True):
     _adapter_name = bot.adapter.get_name()
-    return await get_sql_user(platform=_adapter_name, account=event.get_user_id(), auto_create=auto_create)
+    return await get_sql_user(
+        platform=_adapter_name, account=event.get_user_id(), auto_create=auto_create
+    )
 
 
 async def get_group(bot: Bot, event: Event, auto_create: bool = True):
@@ -18,7 +20,9 @@ async def get_group(bot: Bot, event: Event, auto_create: bool = True):
         return None
     _adapter_name = bot.adapter.get_name()
     groupid = get_groupid(event, bot)
-    group = await get_sql_group(platform=_adapter_name, groupid=groupid, auto_create=auto_create)
+    group = await get_sql_group(
+        platform=_adapter_name, groupid=groupid, auto_create=auto_create
+    )
     return group
 
 
@@ -28,10 +32,12 @@ def _is_private_(event: Event, bot: Bot):
     _adapter_name = bot.adapter.get_name()
     if _adapter_name in ("OneBot V11", "Telegram", "Kaiheila"):
         return _event_name.startswith("message.private")
-    elif _adapter_name == 'Feishu':
+    elif _adapter_name == "Feishu":
         return _event_name == "message.p2p"
-    elif _adapter_name == 'Discord':
+    elif _adapter_name == "Discord":
         return not bool(hasattr(event, "member") and event.member)
+    elif _adapter_name == "RedProtocol":
+        return event.is_private
     else:
         return False
 
@@ -54,9 +60,11 @@ async def _is_superuser_(event: Event, bot: Bot):
         elif _adapter_name == "Kaiheila":
             """以拥有管理员权限(1)为准"""
             try:
-                data = await bot.call_api("guild-role/list", guild_id=event.event.guild_id)
+                data = await bot.call_api(
+                    "guild-role/list", guild_id=event.event.guild_id
+                )
             except Exception as e:
-                if e.message == '你没有权限进行此操作':
+                if e.message == "你没有权限进行此操作":
                     raise Exception("机器人权限不足以判断用户是否为管理员,请先将机器人设置为kook频道管理员") from e
                 else:
                     raise Exception("获取Kook群组用户权限列表失败") from e
@@ -68,10 +76,10 @@ async def _is_superuser_(event: Event, bot: Bot):
                         else:
                             raise Exception("你没有Kook群组中 管理员 的权限,无权使用本命令")
             raise Exception("你没有Kook群组中 管理员 的权限,无权使用本命令")
-        elif _adapter_name == 'Discord':
+        elif _adapter_name == "Discord":
             """以拥有 Manage Channle 权限(0x10)为管理员"""
             try:
-                data = await bot.call_api('get_guild_roles', guild_id=event.guild_id)
+                data = await bot.call_api("get_guild_roles", guild_id=event.guild_id)
             except Exception as e:
                 raise Exception("获取Discord群组用户权限列表失败") from e
             for role in data:
@@ -82,8 +90,8 @@ async def _is_superuser_(event: Event, bot: Bot):
                         raise Exception("你没有Discord群组中 Manage Channle的权限,无权使用本命令")
 
             raise Exception("你没有Discord群组中 Manage Channle的权限,无权使用本命令")
-        elif _adapter_name == 'Telegram':
-            data = await bot.call_api('get_chat_administrators', chat_id=event.chat.id)
+        elif _adapter_name == "Telegram":
+            data = await bot.call_api("get_chat_administrators", chat_id=event.chat.id)
             if event.get_user_id() in [str(one.user.id) for one in data]:
                 return True
             else:
@@ -91,7 +99,7 @@ async def _is_superuser_(event: Event, bot: Bot):
         else:
             return False
     else:
-        raise Exception('Bind插件未开启允许群组管理员使用本命令,而你也并非Bind管理员,无权使用此命令')
+        raise Exception("Bind插件未开启允许群组管理员使用本命令,而你也并非Bind管理员,无权使用此命令")
 
 
 def get_groupid(event: Event, bot: Bot):
@@ -99,12 +107,14 @@ def get_groupid(event: Event, bot: Bot):
         return None
     _event_name = event.get_event_name()
     _adapter_name = bot.adapter.get_name()
-    if _adapter_name in ("OneBot V11","OneBot V12", "Kaiheila", "Feishu"):
+    if _adapter_name in ("OneBot V11", "OneBot V12", "Kaiheila", "Feishu"):
         return str(event.group_id)
-    elif _adapter_name in ('Discord'):
+    elif _adapter_name in ("Discord"):
         return str(event.channel_id)
-    elif _adapter_name == 'Telegram':
+    elif _adapter_name == "Telegram":
         return str(event.chat.id)
+    elif _adapter_name == "RedProtocol":
+        return str(event.peerUin)
     else:
         raise Exception("暂时不支持获取这个adapter的groupid")
 
